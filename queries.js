@@ -19,6 +19,21 @@ class Queries {
       .promise()
       .query("SELECT * FROM departments;");
   }
+  getAllRoles(){
+    return this.database
+        .promise()
+        .query("SELECT * FROM roles");
+  }
+  getAllEmployees(){
+    return this.database
+    .promise()
+    .query("SELECT * FROM employees");
+  }
+  addDepartment(departmentName){
+    return this.database
+      .promise()
+      .query('INSERT INTO departments SET ?', departmentName)
+  }
 }
 
 module.exports = new Queries(db);

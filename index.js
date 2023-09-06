@@ -1,9 +1,7 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const mysql = require("mysql2");
-const queries = require('./queries');
-
-
+const queries = require("./queries");
 
 // db.query(`SELECT employees.first_name AS first_name, employees.last_name AS last_name, roles.title AS title
 // FROM employees
@@ -35,32 +33,71 @@ function mainMenu() {
     ])
     .then((answers) => {
       if (answers.initialChoices === "View all departments") {
-        console.log("Initial Choice Declared")
-            displayDepartments();
-    //   } else if (answers.initialChoices === "View all roles") {
-    //     db.displayRoles();
-    //   } else if (answers.initialChoices === "View all employees") {
-    //     db.displayEmployees();
-    //   } else if (answers.initialChoices === "Add a department") {
-    //     store.addDepartment();
-    //   } else if (answers.initialChoices === "Add a role") {
-    //     store.addRole();
-    //   } else if (answers.initialChoices === "Add an employee") {
-    //     store.addEmployee();
-    //   } else {
-    //     store.updateEmployee();
+        console.log("Initial Choice Declared");
+        displayDepartments();
+      } else if (answers.initialChoices === "View all roles") {
+        displayRoles();
+          } else if (answers.initialChoices === "View all employees") {
+            displayEmployees();
+          } else if (answers.initialChoices === "Add a department") {
+            addDepartment();
+        //   } else if (answers.initialChoices === "Add a role") {
+        //     store.addRole();
+        //   } else if (answers.initialChoices === "Add an employee") {
+        //     store.addEmployee();
+        //   } else {
+        //     store.updateEmployee();
       }
     });
 }
 
-function displayDepartments(){
-    queries.getAllDepartments().then((result)=>{
-        console.log(result)
-    }).then(()=>{
-        mainMenu();
+function displayDepartments() {
+  queries
+    .getAllDepartments()
+    .then(([result]) => {
+      console.table(result);
     })
+    .then(() => {
+      mainMenu();
+    });
+}
+function displayRoles() {
+  queries
+    .getAllRoles()
+    .then(([result]) => {
+      console.table(result);
+    })
+    .then(() => {
+      mainMenu();
+    });
 };
 
+function displayEmployees(){
+    queries
+    .getAllEmployees()
+    .then(([result])=> {
+        console.table(result);
+    })
+    .then(() => {
+        mainMenu();
+    });
+};
+
+function addDepartment(){
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: "What is the name of the new department?",
+                name: 'name'
+            }
+        ]).then((answer)=>{
+            queries
+            .addDepartment(answer).then(()=>{
+                console.log(`${answer.name} department  successfully added!`)
+            }).then(()=> mainMenu())
+        });
+}
 
 // {
 //     type: 'input',
