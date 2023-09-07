@@ -4,7 +4,7 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "NokiaLumina1020",
+    password: "",
     database: "company_db",
   },
   console.log(`Connected to the company_db database.`)
@@ -17,7 +17,7 @@ class Queries {
   getAllDepartments() {
     return this.database
       .promise()
-      .query("SELECT * FROM departments;");
+      .query("SELECT id, name FROM departments;");
   }
   getAllRoles(){
     return this.database

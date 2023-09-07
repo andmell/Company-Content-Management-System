@@ -41,8 +41,8 @@ function mainMenu() {
             displayEmployees();
           } else if (answers.initialChoices === "Add a department") {
             addDepartment();
-        //   } else if (answers.initialChoices === "Add a role") {
-        //     store.addRole();
+          } else if (answers.initialChoices === "Add a role") {
+            addRole();
         //   } else if (answers.initialChoices === "Add an employee") {
         //     store.addEmployee();
         //   } else {
@@ -99,15 +99,20 @@ function addDepartment(){
         });
 }
 
-// {
-//     type: 'input',
-//     message: `What's the name of the department you would like to add?`,
-//     name: 'DepartmentName',
-//     when: (answers) => answers.initialChoices === 'Add a department',
-// },
-// {
-//     type: 'input',
-//     message: `What's the title of the role you would like to add?`,
-//     name: 'roleTitle',
-//     when: (answers) => answers.initialChoices === 'Add a role',
-// },
+function addRole(){
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: "What is the name of the new role?",
+                name: 'title',
+            },
+            {
+                type: 'input',
+                message: "What is the salary of the new role?",
+                name: 'salary'
+            },
+        ]).then(()=>{
+
+        })
+}
