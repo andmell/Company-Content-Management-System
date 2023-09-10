@@ -48,9 +48,9 @@ function mainMenu() {
         addRole();
       } else if (answers.initialChoices === "Add an employee") {
         addEmployee();
-      }
-      //   } else if{
-      //     updateEmployee();
+      } else {
+          updateEmployee();
+         }
     });
 }
 
@@ -187,13 +187,62 @@ function addEmployee() {
           },
         ])
         .then((response) => {
-          queries.addEmployee(response)
-          .then(()=> {
-            console.log(`${response.first_name} ${response.last_name} successfully added!`)
+          queries
+            .addEmployee(response)
+            .then(() => {
+              console.log(
+                `${response.first_name} ${response.last_name} successfully added!`
+              );
+            })
+            .then(() => {
+              mainMenu();
+            });
+        });
+    });
+  });
+}
+
+function updateEmployee() {
+  queries.getAllEmployees().then(([employees]) => {
+    const employeeChoices = employees.map((employee) => {
+      return {
+        value: employee.id,
+        name: `${employee.first_name} ${employee.last_name}`,
+      };
+    });
+    queries.getAllRoles().then(([roles]) => {
+      const roleChoices = roles.map((role) => {
+        return {
+          value: role.id,
+          name: role.title,
+        };
+      });
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            message: 'Which employee would you like to update?',
+            name: 'employee_id',
+            choices: employeeChoices,
+          },
+          {
+            type: 'list',
+            message: 'What role would you like to assign this employee?',
+            name: 'role_id',
+            choices: roleChoices,
+          },
+        ]).then((response)=>{
+          queries.
+          updateEmployee(response)
+          .then(() => {
+            const employeeName = employees.find((employee) => {
+             return employee.id === response.employee_id;
+            })
+            console.log(`${employeeName.first_name} ${employeeName.last_name} successfully updated!`);
           }).then(()=> {
             mainMenu();
           });
-        });
+        })
     });
   });
 }
