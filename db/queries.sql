@@ -6,4 +6,3 @@ SELECT roles.title AS title, roles.salary AS salary, departments.name AS departm
 FROM roles
 JOIN departments ON roles.department_id = departments.id;
 
-SELECT depar

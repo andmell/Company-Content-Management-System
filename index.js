@@ -28,6 +28,7 @@ function mainMenu() {
           "Add a role",
           "Add an employee",
           "Update employee role",
+          "Exit",
         ],
       },
     ])
@@ -37,17 +38,19 @@ function mainMenu() {
         displayDepartments();
       } else if (answers.initialChoices === "View all roles") {
         displayRoles();
-          } else if (answers.initialChoices === "View all employees") {
-            displayEmployees();
-          } else if (answers.initialChoices === "Add a department") {
-            addDepartment();
-          } else if (answers.initialChoices === "Add a role") {
-            addRole();
-        //   } else if (answers.initialChoices === "Add an employee") {
-        //     store.addEmployee();
-        //   } else {
-        //     store.updateEmployee();
+      } else if (answers.initialChoices === "View all employees") {
+        displayEmployees();
+      } else if (answers.initialChoices === "Add a department") {
+        addDepartment();
+      } else if (answers.initialChoices === "Exit") {
+        process.exit();
+      } else if (answers.initialChoices === "Add a role") {
+        addRole();
+      } else if (answers.initialChoices === "Add an employee") {
+          addEmployee();
       }
+      //   } else if{
+      //     store.updateEmployee();
     });
 }
 
@@ -70,49 +73,120 @@ function displayRoles() {
     .then(() => {
       mainMenu();
     });
-};
-
-function displayEmployees(){
-    queries
-    .getAllEmployees()
-    .then(([result])=> {
-        console.table(result);
-    })
-    .then(() => {
-        mainMenu();
-    });
-};
-
-function addDepartment(){
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: "What is the name of the new department?",
-                name: 'name'
-            }
-        ]).then((answer)=>{
-            queries
-            .addDepartment(answer).then(()=>{
-                console.log(`${answer.name} department  successfully added!`)
-            }).then(()=> mainMenu())
-        });
 }
 
-function addRole(){
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: "What is the name of the new role?",
-                name: 'title',
-            },
-            {
-                type: 'input',
-                message: "What is the salary of the new role?",
-                name: 'salary'
-            },
-        ]).then(()=>{
+function displayEmployees() {
+  queries
+    .getAllEmployees()
+    .then(([result]) => {
+      console.table(result);
+    })
+    .then(() => {
+      mainMenu();
+    });
+}
 
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the new department?",
+        name: "name",
+      },
+    ])
+    .then((answer) => {
+      queries
+        .addDepartment(answer)
+        .then(() => {
+          console.log(`${answer.name} department  successfully added!`);
         })
+        .then(() => mainMenu());
+    });
+}
+
+function addRole() {
+  queries.getAllDepartments().then(([departments]) => {
+    const departmentChoices = departments.map((department) => {
+      return {
+        value: department.id,
+        name: department.name,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What is the name of the new role?",
+          name: "title",
+        },
+        {
+          type: "input",
+          message: "What is the salary of the new role?",
+          name: "salary",
+        },
+        {
+          type: "list",
+          message: "What department is the new role inside of?",
+          name: "department_id",
+          choices: departmentChoices,
+        },
+      ])
+      .then((response) => {
+        queries
+          .addRole(response)
+          .then(() => {
+            console.log(`${response.title} role successfully added!`);
+          })
+          .then(() => {
+            mainMenu();
+          });
+      });
+    // console.log(departmentChoices);
+  });
+}
+function addEmployee() {
+  queries.getAllRoles().then(([roles]) => {
+    const roleChoices = roles.map((role) => {
+      return {
+        value: role.id,
+        name: role.title,
+      };
+    });
+    queries.getAllEmployees().then(([employees]) => {
+      const managerChoices = employees.map((manager) => {
+        return {
+          value: manager.id,
+          name: `${manager.first_name} ${manager.last_name}`,
+        };
+      }); 
+      inquirer
+      .prompt([
+        {
+          type: 'input',
+          message: 'What is the employees first name?',
+          name: 'first_name'
+        },
+        {
+          type: 'input',
+          message: 'What is the employees last name?',
+          name: 'last_name'
+        },
+        {
+          type: 'list',
+          message: 'What is the employees position?',
+          name: 'role_id',
+          choices: roleChoices,
+        },
+        {
+          type: 'list',
+          message: 'Who is the employees manager?',
+          name: 'manager_id',
+          choices: managerChoices,
+        }
+      ]).then((response)=>{
+        console.log(response)
+      })
+    });
+  });
 }

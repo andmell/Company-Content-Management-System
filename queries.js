@@ -4,7 +4,7 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "",
+    password: "hellogoodbye",
     database: "company_db",
   },
   console.log(`Connected to the company_db database.`)
@@ -17,7 +17,7 @@ class Queries {
   getAllDepartments() {
     return this.database
       .promise()
-      .query("SELECT id, name FROM departments;");
+      .query("SELECT * FROM departments;");
   }
   getAllRoles(){
     return this.database
@@ -34,6 +34,11 @@ class Queries {
       .promise()
       .query('INSERT INTO departments SET ?', departmentName)
   }
-}
+  addRole(roleData){
+    return this.database
+    .promise()
+    .query('INSERT INTO roles SET ?', roleData)
+  };
+};
 
 module.exports = new Queries(db);
