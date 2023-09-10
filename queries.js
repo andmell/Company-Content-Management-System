@@ -39,6 +39,11 @@ class Queries {
     .promise()
     .query('INSERT INTO roles SET ?', roleData)
   };
+  addEmployee(employeeData){
+    return this.database
+    .promise()
+    .query('INSERT INTO employees SET ?', employeeData)
+  };
 };
 
 module.exports = new Queries(db);

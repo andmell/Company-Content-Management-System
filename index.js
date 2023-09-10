@@ -47,10 +47,10 @@ function mainMenu() {
       } else if (answers.initialChoices === "Add a role") {
         addRole();
       } else if (answers.initialChoices === "Add an employee") {
-          addEmployee();
+        addEmployee();
       }
       //   } else if{
-      //     store.updateEmployee();
+      //     updateEmployee();
     });
 }
 
@@ -159,34 +159,41 @@ function addEmployee() {
           value: manager.id,
           name: `${manager.first_name} ${manager.last_name}`,
         };
-      }); 
+      });
+      managerChoices.push({ value: null, name: `No Manager` });
       inquirer
-      .prompt([
-        {
-          type: 'input',
-          message: 'What is the employees first name?',
-          name: 'first_name'
-        },
-        {
-          type: 'input',
-          message: 'What is the employees last name?',
-          name: 'last_name'
-        },
-        {
-          type: 'list',
-          message: 'What is the employees position?',
-          name: 'role_id',
-          choices: roleChoices,
-        },
-        {
-          type: 'list',
-          message: 'Who is the employees manager?',
-          name: 'manager_id',
-          choices: managerChoices,
-        }
-      ]).then((response)=>{
-        console.log(response)
-      })
+        .prompt([
+          {
+            type: "input",
+            message: "What is the employees first name?",
+            name: "first_name",
+          },
+          {
+            type: "input",
+            message: "What is the employees last name?",
+            name: "last_name",
+          },
+          {
+            type: "list",
+            message: "What is the employees position?",
+            name: "role_id",
+            choices: roleChoices,
+          },
+          {
+            type: "list",
+            message: "Who is the employees manager?",
+            name: "manager_id",
+            choices: managerChoices,
+          },
+        ])
+        .then((response) => {
+          queries.addEmployee(response)
+          .then(()=> {
+            console.log(`${response.first_name} ${response.last_name} successfully added!`)
+          }).then(()=> {
+            mainMenu();
+          });
+        });
     });
   });
 }
