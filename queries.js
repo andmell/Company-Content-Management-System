@@ -10,6 +10,8 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`)
 );
 
+
+//This Queries class will contain all of the methods that have any SQL inside of them, that will be called upon in other functions in the index page.
 class Queries {
   constructor(database) {
     this.database = database;

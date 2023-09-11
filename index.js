@@ -3,16 +3,10 @@ const fs = require("fs");
 const mysql = require("mysql2");
 const queries = require("./queries");
 
-// db.query(`SELECT employees.first_name AS first_name, employees.last_name AS last_name, roles.title AS title
-// FROM employees
-// JOIN roles ON employees.role_id = roles.id;`, null, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     }
-//     console.log(result);
-// });
+// Upon initialization, we call the main menu function that starts the program.
 mainMenu();
 
+//The main menu function that will prompt the user for an action to take, and will engage a function depending on their choice.
 function mainMenu() {
   inquirer
     .prompt([
@@ -53,7 +47,7 @@ function mainMenu() {
       }
     });
 }
-
+// Will call upon the getAllDepartments() function in the queries page, then show the result in a table.
 function displayDepartments() {
   queries
     .getAllDepartments()
@@ -63,7 +57,8 @@ function displayDepartments() {
     .then(() => {
       mainMenu();
     });
-}
+};
+// Will call all departments, and then all roles, and will display both the roles and the related departments in a table with each other.
 function displayRoles() {
   queries.getAllDepartments().then(([departments]) => {
     queries
@@ -86,7 +81,7 @@ function displayRoles() {
       });
   });
 }
-
+// Similar to the displayDepartments function. This will call all employee data from the employee table and display it in a table.
 function displayEmployees() {
   queries
     .getAllEmployees()
@@ -97,7 +92,7 @@ function displayEmployees() {
       mainMenu();
     });
 }
-
+// Will insert a department into the department table. Will first ask the name, and then will shove the answer into the addDepartment function, which will insert it into the database.
 function addDepartment() {
   inquirer
     .prompt([
@@ -116,7 +111,8 @@ function addDepartment() {
         .then(() => mainMenu());
     });
 }
-
+// Similar to the addDepartment function, but will ask the name, salary and department of the new role.
+// This function creates a constant called "department choices" which will create an array of all data currently in the department database, and put it in an array to use in a prompt.
 function addRole() {
   queries.getAllDepartments().then(([departments]) => {
     const departmentChoices = departments.map((department) => {
@@ -154,9 +150,9 @@ function addRole() {
             mainMenu();
           });
       });
-    // console.log(departmentChoices);
   });
-}
+};
+// Similar to the addRole function, this function will create an array of managers and roles to choose from, when deciding the employee's role and manager. Will pull data from existing database.
 function addEmployee() {
   queries.getAllRoles().then(([roles]) => {
     const roleChoices = roles.map((role) => {
@@ -213,7 +209,9 @@ function addEmployee() {
     });
   });
 }
-
+//This function will first create an array of employees to choose from. The function will also create an array of roles to use later.
+// Inquirer will prompt the user with the employee array, and then the role array.
+// The function will then call the updateEmployee function in the queries file to push the data from the first two questions into the database.
 function updateEmployee() {
   queries.getAllEmployees().then(([employees]) => {
     const employeeChoices = employees.map((employee) => {
