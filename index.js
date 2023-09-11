@@ -49,8 +49,8 @@ function mainMenu() {
       } else if (answers.initialChoices === "Add an employee") {
         addEmployee();
       } else {
-          updateEmployee();
-         }
+        updateEmployee();
+      }
     });
 }
 
@@ -65,14 +65,26 @@ function displayDepartments() {
     });
 }
 function displayRoles() {
-  queries
-    .getAllRoles()
-    .then(([result]) => {
-      console.table(result);
-    })
-    .then(() => {
-      mainMenu();
-    });
+  queries.getAllDepartments().then(([departments]) => {
+    queries
+      .getAllRoles()
+      .then(([roles]) => {
+        const roleTableData = roles.map((role) => {
+          const deptName = departments.find((deptName) => {
+            return deptName.id === role.department_id;
+          });
+          return {
+            title: role.title,
+            salary: role.salary,
+            department: deptName.name,
+          };
+        });
+        console.table(roleTableData);
+      })
+      .then(() => {
+        mainMenu();
+      });
+  });
 }
 
 function displayEmployees() {
@@ -220,29 +232,33 @@ function updateEmployee() {
       inquirer
         .prompt([
           {
-            type: 'list',
-            message: 'Which employee would you like to update?',
-            name: 'employee_id',
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "employee_id",
             choices: employeeChoices,
           },
           {
-            type: 'list',
-            message: 'What role would you like to assign this employee?',
-            name: 'role_id',
+            type: "list",
+            message: "What role would you like to assign this employee?",
+            name: "role_id",
             choices: roleChoices,
           },
-        ]).then((response)=>{
-          queries.
-          updateEmployee(response)
-          .then(() => {
-            const employeeName = employees.find((employee) => {
-             return employee.id === response.employee_id;
+        ])
+        .then((response) => {
+          queries
+            .updateEmployee(response)
+            .then(() => {
+              const employeeName = employees.find((employee) => {
+                return employee.id === response.employee_id;
+              });
+              console.log(
+                `${employeeName.first_name} ${employeeName.last_name} successfully updated!`
+              );
             })
-            console.log(`${employeeName.first_name} ${employeeName.last_name} successfully updated!`);
-          }).then(()=> {
-            mainMenu();
-          });
-        })
+            .then(() => {
+              mainMenu();
+            });
+        });
     });
   });
 }
